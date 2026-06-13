@@ -1,0 +1,355 @@
+/* ========================= */
+/* Navbar */
+/* ========================= */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  backdrop-filter: blur(14px);
+
+  background: rgba(255, 250, 245, 0.85);
+
+  border-bottom: 1px solid var(--border-color);
+
+  box-shadow: var(--shadow-soft);
+}
+
+.navbar-container {
+  max-width: 1200px;
+
+  margin: 0 auto;
+
+  padding: 18px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ========================= */
+/* Logo */
+/* ========================= */
+
+.logo {
+  font-size: 1.9rem;
+  font-weight: 700;
+
+  letter-spacing: 0.5px;
+
+  color: var(--text-primary);
+
+  cursor: pointer;
+
+  transition: transform 0.25s ease;
+}
+
+.logo:hover {
+  transform: scale(1.03);
+}
+
+.logo span {
+  color: var(--accent-primary);
+}
+
+/* ========================= */
+/* Navigation */
+/* ========================= */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nav-link,
+.admin-link {
+  position: relative;
+
+  text-decoration: none;
+
+  color: var(--text-secondary);
+
+  font-size: 0.96rem;
+  font-weight: 500;
+
+  padding: 10px 14px;
+
+  border-radius: 999px;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.nav-link:hover,
+.admin-link:hover {
+  background: rgba(201, 123, 99, 0.12);
+
+  color: var(--accent-primary);
+
+  transform: translateY(-1px);
+}
+
+/* Active Links */
+
+.nav-link.active {
+  background: rgba(201, 123, 99, 0.14);
+
+  color: var(--accent-primary);
+}
+
+/* ========================= */
+/* Cart Badge */
+/* ========================= */
+
+.cart-link {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+
+  top: -5px;
+  right: -2px;
+
+  min-width: 20px;
+  height: 20px;
+
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: var(--badge-bg);
+
+  color: white;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  box-shadow: 0 4px 12px rgba(255, 138, 101, 0.4);
+}
+
+/* ========================= */
+/* Theme Toggle */
+/* ========================= */
+
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+
+  background: var(--bg-card);
+
+  color: var(--text-primary);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1rem;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg);
+
+  background: rgba(201, 123, 99, 0.12);
+
+  border-color: var(--accent-primary);
+}
+
+/* ========================= */
+/* Buttons */
+/* ========================= */
+
+.register-btn,
+.logout-btn {
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+
+  text-decoration: none;
+
+  font-size: 0.94rem;
+  font-weight: 600;
+
+  padding: 11px 18px;
+
+  border-radius: 999px;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Register */
+
+.register-btn {
+  background: var(--accent-primary);
+
+  color: white;
+
+  box-shadow: 0 10px 20px rgba(201, 123, 99, 0.22);
+}
+
+.register-btn:hover {
+  background: var(--accent-hover);
+
+  transform: translateY(-2px);
+}
+
+.register-btn.active {
+  background: var(--accent-hover);
+}
+
+/* Logout */
+
+.logout-btn {
+  background: transparent;
+
+  border: 1px solid rgba(201, 123, 99, 0.3);
+
+  color: var(--accent-primary);
+}
+
+.logout-btn:hover {
+  background: rgba(201, 123, 99, 0.1);
+
+  transform: translateY(-2px);
+}
+
+/* Admin */
+
+.admin-link {
+  color: #b65c3a;
+  font-weight: 600;
+}
+
+/* ========================= */
+/* Mobile Toggle */
+/* ========================= */
+
+.menu-toggle {
+  display: none;
+
+  flex-direction: column;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  width: 24px;
+  height: 2px;
+
+  margin: 3px auto;
+
+  background: var(--text-primary);
+
+  border-radius: 999px;
+
+  transition: 0.3s ease;
+}
+
+.menu-toggle.active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ========================= */
+/* Responsive */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+  .navbar-container {
+    padding: 16px 18px;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav-links {
+    position: absolute;
+
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    background: rgba(255, 250, 245, 0.98);
+
+    backdrop-filter: blur(14px);
+
+    border-bottom: 1px solid var(--border-color);
+
+    padding: 20px;
+
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 10px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(-10px);
+
+    transition: all 0.3s ease;
+  }
+
+  .show-menu {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateY(0);
+  }
+
+  .nav-link,
+  .admin-link,
+  .register-btn,
+  .logout-btn,
+  .theme-toggle {
+    width: 100%;
+
+    text-align: center;
+  }
+
+  .theme-toggle {
+    border-radius: 14px;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+  }
+}
