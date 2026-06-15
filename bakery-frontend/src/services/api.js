@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api"
+  baseURL: "https://bakery-shop-8o7w.onrender.com/api"
 });
 
 // attach token automatically
