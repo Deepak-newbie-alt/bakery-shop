@@ -170,6 +170,98 @@
     rgba(217, 83, 79, 0.18);
 }
 
+/* Quantity Controls */
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: #fdf6f0;
+  border: 1px solid #f0dfd2;
+
+  padding: 8px 12px;
+
+  border-radius: 999px;
+
+  width: fit-content;
+
+  margin-top: 10px;
+}
+
+.qty-btn {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  background: #c97b63;
+  color: white;
+
+  transition: all 0.25s ease;
+}
+
+.qty-btn:hover {
+  transform: scale(1.08);
+  background: #b86a53;
+}
+
+.qty-value {
+  min-width: 20px;
+
+  text-align: center;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  color: #5b4335;
+}
+
+/* Quantity Badge */
+
+.quantity-badge {
+  margin-left: 8px;
+
+  background: #f3d8c6;
+  color: #6b4b3e;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.qty-btn {
+  background: linear-gradient(
+    135deg,
+    #d5967d,
+    #c97b63
+  );
+}
+
+
 /* ========================= */
 /* SUMMARY */
 /* ========================= */
@@ -325,5 +417,29 @@
   .cart-image {
     width: 80px;
     height: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-left {
+    width: 100%;
+  }
+
+  .quantity-controls {
+    margin-top: 12px;
+  }
+
+  .remove-btn {
+    width: 100%;
+  }
+
+  .cart-summary {
+    margin-top: 20px;
   }
 }

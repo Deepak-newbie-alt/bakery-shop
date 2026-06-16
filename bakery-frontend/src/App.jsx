@@ -14,10 +14,26 @@ import AdminOrders from "./pages/AdminOrders";
 import AdminRoute from "./components/AdminRoute";
 
 function App() {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    try {
+      const savedCart =
+        localStorage.getItem("cart");
+
+      return savedCart
+        ? JSON.parse(savedCart)
+        : [];
+    } catch {
+      return [];
+    }
+  });
   const [user, setUser] = useState(
   JSON.parse(localStorage.getItem("user"))
 );
+
+  const cartCount = cart.reduce(
+  (sum, item) => sum + item.quantity,
+  0
+  );
 
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") || "light"
@@ -41,6 +57,7 @@ function App() {
   localStorage.setItem("theme", theme);
 }, [theme]);
 
+
   return (
     <Router>
       <Toaster
@@ -56,7 +73,7 @@ function App() {
         }}
       />
       <Navbar
-        cartCount={cart.length}
+        cartCount={cartCount}
         user={user}
         setUser={setUser}
         theme={theme}

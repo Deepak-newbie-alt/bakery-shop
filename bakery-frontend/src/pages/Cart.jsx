@@ -6,26 +6,38 @@ const Cart = ({ cart, setCart }) => {
 
   const [isPaying, setIsPaying] = useState(false);
 
-  const total = cart.reduce(
-    (sum, item) => sum + item.price,
-    0
+  const total =cart.reduce(
+  (sum, item) => sum + item.price * item.quantity,
+  0
+  )
+
+  const totalItems = cart.reduce(
+  (sum, item) => sum + item.quantity,
+  0
   );
 
-  const removeFromCart = (indexToRemove) => {
-    const updatedCart = cart.filter(
-      (_, index) => index !== indexToRemove
-    );
+const removeFromCart = (productId) => {
+  const updatedCart = cart
+    .map((item) =>
+      item._id === productId
+        ? {
+            ...item,
+            quantity: item.quantity - 1
+          }
+        : item
+    )
+    .filter((item) => item.quantity > 0);
 
-    setCart(updatedCart);
-  };
+  setCart(updatedCart);
+};
 
-  const placeOrder = async () => {
+const placeOrder = async () => {
     try {
 
       const orderData = {
         products: cart.map((item) => ({
           name: item.name,
-          quantity: 1,
+          quantity: item.quantity,
           price: item.price,
           productId: item._id
         })),
@@ -40,6 +52,19 @@ const Cart = ({ cart, setCart }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const increaseQuantity = (productId) => {
+  setCart(
+    cart.map((item) =>
+      item._id === productId
+        ? {
+            ...item,
+            quantity: item.quantity + 1
+          }
+        : item
+    )
+  );
   };
 
   const handlePayment = async () => {
@@ -115,7 +140,6 @@ const Cart = ({ cart, setCart }) => {
       setIsPaying(false);
     }
   };
-
   return (
     <div className="cart-container">
 
@@ -175,7 +199,10 @@ const Cart = ({ cart, setCart }) => {
 
                     <div className="cart-item-info">
 
-                      <h4>{item.name}</h4>
+                      <h4>
+                        {item.name}
+                        <span className="quantity-badge">{item.quantity}</span>
+                        </h4>
 
                       <p className="item-price">
                         ₹{item.price}
@@ -184,14 +211,29 @@ const Cart = ({ cart, setCart }) => {
                     </div>
                   </div>
 
+                <div className="quantity-controls">
+
                   <button
-                    className="remove-btn"
+                    className="qty-btn"
                     onClick={() =>
-                      removeFromCart(index)
+                      removeFromCart(item._id)
                     }
                   >
-                    Remove
+                    -
                   </button>
+
+                  <span className="qty-value">{item.quantity}</span>
+
+                  <button
+                    onClick={() =>
+                      increaseQuantity(item._id)
+                    }
+                    className="qty-btn"
+                  >
+                    +
+                  </button>
+
+                </div>
 
                 </div>
               ))}
@@ -204,7 +246,7 @@ const Cart = ({ cart, setCart }) => {
 
               <div className="summary-row">
                 <span>Items</span>
-                <span>{cart.length}</span>
+                <span>{totalItems}</span>
               </div>
 
               <div className="summary-row total-row">
