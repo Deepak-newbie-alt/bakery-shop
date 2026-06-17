@@ -119,6 +119,16 @@
   margin-bottom: 6px;
 }
 
+.order-date {
+  margin-top: 4px;
+
+  font-size: 0.85rem;
+
+  color: var(--text-secondary);
+
+  opacity: 0.8;
+}
+
 .order-id {
   color: var(--text-primary);
 }

@@ -58,6 +58,19 @@ const MyOrders = () => {
     }
   };
 
+  const formatDate = (date) => {
+  return new Date(date).toLocaleString(
+    "en-IN",
+    {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    }
+  );
+  };
+
   return (
     <div className="orders-page">
 
@@ -124,6 +137,9 @@ const MyOrders = () => {
 
                     <p className="order-label">
                       Order ID
+                    </p>
+                    <p className="order-date">
+                      🕒{formatDate(order.createdAt)}
                     </p>
 
                     <h4 className="order-id">

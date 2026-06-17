@@ -1,9 +1,32 @@
 const Order = require("../models/Order");
+const Product = require("../models/Product");
 
 // CREATE ORDER
 const createOrder = async (req, res) => {
   try {
+
     const { products, totalPrice } = req.body;
+
+    // Validate stock
+    for (const item of products) {
+
+      const product =
+        await Product.findById(item.productId);
+
+      if (!product) {
+        return res.status(404).json({
+          message: "Product not found"
+        });
+      }
+
+      if (
+        item.quantity > product.stock
+      ) {
+        return res.status(400).json({
+          message: `${product.name} has only ${product.stock} items left`
+        });
+      }
+    }
 
     const order = await Order.create({
       user: req.user.id,
@@ -11,10 +34,26 @@ const createOrder = async (req, res) => {
       totalPrice
     });
 
+    // Reduce stock
+    for (const item of products) {
+
+      await Product.findByIdAndUpdate(
+        item.productId,
+        {
+          $inc: {
+            stock: -item.quantity
+          }
+        }
+      );
+    }
+
     res.status(201).json(order);
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    res.status(500).json({
+      message: error.message
+    });
   }
 };
 

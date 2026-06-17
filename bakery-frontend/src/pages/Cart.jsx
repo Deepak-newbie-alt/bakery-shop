@@ -1,5 +1,6 @@
 import { useState } from "react";
 import API from "../services/api";
+import toast from "react-hot-toast";
 import "./Cart.css";
 
 const Cart = ({ cart, setCart }) => {
@@ -55,16 +56,30 @@ const placeOrder = async () => {
   };
 
   const increaseQuantity = (productId) => {
-  setCart(
-    cart.map((item) =>
-      item._id === productId
-        ? {
-            ...item,
-            quantity: item.quantity + 1
-          }
-        : item
-    )
-  );
+
+    const product = cart.find(
+      (item) => item._id === productId
+    );
+
+    if (
+      product.quantity >= product.stock
+    ) {
+      toast.error(
+        `Only ${product.stock} items available`
+      );
+      return;
+    }
+
+    setCart(
+      cart.map((item) =>
+        item._id === productId
+          ? {
+              ...item,
+              quantity: item.quantity + 1
+            }
+          : item
+      )
+    );
   };
 
   const handlePayment = async () => {
