@@ -82,6 +82,29 @@ const AdminDashboard = () => {
             </button>
 
           </div>
+          {/* Manage Products */}
+          <div
+          className="dashboard-card"
+          onClick={() =>
+            navigate("/admin/products")
+          }
+        >
+
+          <div className="dashboard-icon">
+            🛒
+          </div>
+
+          <h3>Manage Products</h3>
+
+          <p>
+            Edit prices, stock, product details and product images.
+          </p>
+
+          <button className="dashboard-btn">
+            Manage Products
+          </button>
+
+        </div>
 
         </div>
       </div>

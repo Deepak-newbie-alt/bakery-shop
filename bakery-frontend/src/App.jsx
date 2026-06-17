@@ -12,6 +12,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AddProduct from "./pages/AddProduct";
 import AdminOrders from "./pages/AdminOrders";
 import AdminRoute from "./components/AdminRoute";
+import AdminProducts from "./pages/AdminProducts";
+import EditProduct from "./pages/EditProducts";
 
 function App() {
   const [cart, setCart] = useState(() => {
@@ -106,6 +108,23 @@ function App() {
           element={
             <AdminRoute>
               <AdminOrders/>
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/products"
+          element={
+          <AdminRoute>
+            <AdminProducts />
+          </AdminRoute>
+        }
+      />
+      <Route
+          path="/admin/edit-product/:id"
+          element={
+            <AdminRoute>
+              <EditProduct />
             </AdminRoute>
           }
         />

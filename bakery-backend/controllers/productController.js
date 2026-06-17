@@ -10,6 +10,30 @@ const getProducts = async (req, res) => {
   }
 };
 
+//GET PRODUCT BY ID
+const getProductById = async (req, res) => {
+  try {
+
+    const product = await Product.findById(
+      req.params.id
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
+
+    res.json(product);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
 // ADD product
 const createProduct = async (req, res) => {
   try {
@@ -49,4 +73,47 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = { getProducts, createProduct, deleteProduct};
+const updateProduct = async (req, res) => {
+  try {
+
+    const { name, price, category, stock } =
+      req.body;
+
+    const product =
+      await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
+
+    product.name =
+      name || product.name;
+
+    product.price =
+      price || product.price;
+
+    product.category =
+      category || product.category;
+
+    product.stock =
+      stock ?? product.stock;
+
+    if (req.file) {
+      product.image = req.file.path;
+    }
+
+    await product.save();
+
+    res.json(product);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+module.exports = { getProducts,getProductById, createProduct, deleteProduct,updateProduct };

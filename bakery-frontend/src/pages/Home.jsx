@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import API from "../services/api";
 import toast from "react-hot-toast";
 import "./Home.css";
@@ -6,16 +6,19 @@ import "./Home.css";
 const Home = ({ cart, setCart }) => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] =useState("All");
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  const fetchProducts = async () => {
-    const res = await API.get("/products");
-    setProducts(res.data);
-  };
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    const fetchProducts = async () => {
+      try {
+        const res = await API.get("/products");
+        setProducts(res.data);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load products");
+      }
+    };
+
     fetchProducts();
   }, []);
 
@@ -24,7 +27,7 @@ const Home = ({ cart, setCart }) => {
       (item) => item._id === product._id
     );
 
-      // Stock validation
+    // Stock validation
     if (
       existingProduct &&
       existingProduct.quantity >= product.stock
@@ -36,64 +39,58 @@ const Home = ({ cart, setCart }) => {
     }
 
     if (existingProduct) {
-      const updatedCart = cart.map((item) =>
-        item._id === product._id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item._id === product._id
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+              }
+            : item
+        )
       );
 
-      setCart(updatedCart);
+      toast.success("Added to cart");
     } else {
-      setCart([
-        ...cart,
+      setCart((prevCart) => [
+        ...prevCart,
         {
           ...product,
-          quantity: 1
-        }
+          quantity: 1,
+        },
       ]);
+
+      toast.success("Added to cart");
     }
   };
 
-  const deleteProduct = async (id) => {
-    try {
-      await API.delete(`/products/${id}`);
-      alert("Product deleted");
-      fetchProducts();
-    } catch (error) {
-      alert("Delete failed");
-      console.log(error);
-    }
-  };
-
-  const filteredProducts = products.filter(
-    (product) => {
-
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
       const matchesSearch =
         product.name
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
 
       const matchesCategory =
         selectedCategory === "All" ||
         product.category === selectedCategory;
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
-    }
-  );
+      return matchesSearch && matchesCategory;
+    });
+  }, [products, searchTerm, selectedCategory]);
 
   const categories = [
-  "All",
-  ...new Set(
-    products.map((product) => product.category)
-  )
+    "All",
+    ...new Set(
+      products
+        .map((product) => product.category)
+        .filter(Boolean)
+    ),
   ];
 
   return (
     <div className="home-container">
-      {/* 🔥 Hero Section */}
+      {/* Hero Section */}
       <div className="hero">
         <h1>Freshly Baked Luxury</h1>
         <p>Experience premium handcrafted delights</p>
@@ -102,39 +99,37 @@ const Home = ({ cart, setCart }) => {
       {/* Title */}
       <h2 className="title">Our Collection</h2>
 
-      {/* 🔍 Search Bar */}
-    <div className="search-container">
-      <input
-      type="text"
-      className="search-input"
-      placeholder="Search cakes, pastries, cupcakes..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
-    </div>
-
-    {/* Category Filter Buttons */}
-    <div className="category-filter">
-
-      {categories.map((category) => (
-
-        <button
-          key={category}
-          className={
-            selectedCategory === category
-              ? "category-btn active-category"
-              : "category-btn"
+      {/* Search Bar */}
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search cakes, pastries, cupcakes..."
+          value={searchTerm}
+          onChange={(e) =>
+            setSearchTerm(e.target.value)
           }
-          onClick={() =>
-            setSelectedCategory(category)
-          }
-        >
-          {category}
-        </button>
+        />
+      </div>
 
-      ))}
-
-    </div>
+      {/* Category Filter */}
+      <div className="category-filter">
+        {categories.map((category) => (
+          <button
+            key={category}
+            className={
+              selectedCategory === category
+                ? "category-btn active-category"
+                : "category-btn"
+            }
+            onClick={() =>
+              setSelectedCategory(category)
+            }
+          >
+            {category}
+          </button>
+        ))}
+      </div>
 
       {filteredProducts.length === 0 ? (
         <div className="empty-products">
@@ -143,13 +138,16 @@ const Home = ({ cart, setCart }) => {
       ) : (
         <div className="product-grid">
           {filteredProducts.map((p) => (
-            <div className="product-card" key={p._id}>
+            <div
+              className="product-card"
+              key={p._id}
+            >
               <div className="image-container">
                 <img
                   src={p.image}
                   alt={p.name}
                   onError={(e) => {
-                    e.target.src =
+                    e.currentTarget.src =
                       "https://placehold.co/600x400/f8efe6/6f5b52?text=Bakery+Item";
                   }}
                 />
@@ -157,30 +155,28 @@ const Home = ({ cart, setCart }) => {
 
               <div className="product-info">
                 <h3>{p.name}</h3>
-                <p className="price">₹{p.price}</p>
+
+                <p className="price">
+                  ₹{p.price}
+                </p>
 
                 <p className="stock-text">
-                  Stock: {p.stock}
+                  {p.stock > 0
+                    ? `Stock: ${p.stock}`
+                    : "Out of Stock"}
                 </p>
 
                 <button
                   className="add-btn"
-                  onClick={() => addToCart(p)}
+                  onClick={() =>
+                    addToCart(p)
+                  }
                   disabled={p.stock <= 0}
                 >
                   {p.stock <= 0
                     ? "Out of Stock"
                     : "Add to Cart"}
                 </button>
-
-                {user?.isAdmin && (
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteProduct(p._id)}
-                  >
-                    Delete
-                  </button>
-                )}
               </div>
             </div>
           ))}
