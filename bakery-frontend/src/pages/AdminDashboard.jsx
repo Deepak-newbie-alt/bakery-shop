@@ -1,10 +1,79 @@
+import { useEffect, useState } from "react";
+import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
 
+  const [stats, setStats] = useState({
+  totalProducts: 0,
+  totalOrders: 0,
+  pendingOrders: 0,
+  revenue: 0,
+  lowStockProducts: 0
+  });
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+
+  const fetchStats = async () => {
+
+    try {
+
+      const [productsRes, ordersRes] =
+        await Promise.all([
+          API.get("/products"),
+          API.get("/orders")
+        ]);
+
+      const products =
+        productsRes.data;
+
+      const orders =
+        ordersRes.data;
+
+      const revenue =
+        orders.reduce(
+          (sum, order) =>
+            sum + order.totalPrice,
+          0
+        );
+
+      const pendingOrders =
+        orders.filter(
+          (order) =>
+            order.status === "pending"
+        ).length;
+
+      const lowStockProducts =
+        products.filter(
+          (product) => product.stock <= 5
+        ).length;
+
+      setStats({
+        totalProducts:
+          products.length,
+
+        totalOrders:
+          orders.length,
+
+        pendingOrders,
+
+        revenue,
+        lowStockProducts
+      });
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
+  fetchStats();
+
+  }, []);
 
   return (
     <div className="admin-dashboard-page">
@@ -29,6 +98,36 @@ const AdminDashboard = () => {
           </p>
 
         </div>
+
+        {/* Stats Cards */}
+        <div className="stats-grid">
+
+        <div className="stat-card">
+          <h3>{stats.totalProducts}</h3>
+          <p>Products</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>{stats.totalOrders}</h3>
+          <p>Orders</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>{stats.pendingOrders}</h3>
+          <p>Pending</p>
+        </div>
+
+        <div className="stat-card">
+          <h3>₹{stats.revenue}</h3>
+          <p>Revenue</p>
+        </div>
+
+        <div className="stat-card low-stock-card">
+          <h3>{stats.lowStockProducts}</h3>
+          <p>Low Stock</p>
+        </div>
+
+      </div>
 
         {/* Dashboard Cards */}
         <div className="dashboard-grid">

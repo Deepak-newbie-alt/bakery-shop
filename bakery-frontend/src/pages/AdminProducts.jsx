@@ -42,6 +42,15 @@ const AdminProducts = () => {
 
   const deleteProduct = async (id) => {
 
+    const confirmDelete =
+    window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (!confirmDelete) {
+        return;
+    }
+
     try {
 
       await API.delete(
